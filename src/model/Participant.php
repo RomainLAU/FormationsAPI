@@ -16,7 +16,7 @@ class Participant
 
     public static function findById($id)
     {
-        $pdo = new PDO('mysql:host=localhost:3306;dbname=formations', 'root', 'tiger');
+        $pdo = new PDO($_ENV['DB_TYPE'] . ':host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
 
         // Préparer une requête SQL pour récupérer l'enregistrement avec l'ID spécifié
         $statement = $pdo->prepare('SELECT * FROM participants WHERE id = :id');
@@ -45,7 +45,8 @@ class Participant
 
     public function create()
     {
-        $pdo = new PDO('mysql:host=localhost:3306;dbname=formations', 'root', 'tiger');
+
+        $pdo = new PDO($_ENV['DB_TYPE'] . ':host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
 
         $statement = $pdo->prepare('INSERT INTO participants (lastname, firstname, society) VALUES (:lastname, :firstname, :society)');
 

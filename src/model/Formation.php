@@ -20,8 +20,8 @@ class Formation
 
     public static function findById($id)
     {
-        // $pdo = new PDO('mysql:host=localhost:3306;dbname=formations', 'root', 'tiger');
-        $pdo = new PDO(getenv('DB_TYPE', true) . ':host=' . getenv('DB_HOST', true) . ';dbname=' . getenv('DB_NAME', true), getenv('DB_USER', true), getenv('DB_PASSWORD', true));
+        // $pdo = new PDO($_ENV['DB_TYPE'] . ':host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
+        $pdo = new PDO($_ENV['DB_TYPE'] . ':host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
 
         // Préparer une requête SQL pour récupérer l'enregistrement avec l'ID spécifié
         $statement = $pdo->prepare('SELECT * FROM formations WHERE id = :id');
@@ -50,7 +50,7 @@ class Formation
 
     public function create()
     {
-        $pdo = new PDO('mysql:host=localhost:3306;dbname=formations', 'root', 'tiger');
+        $pdo = new PDO($_ENV['DB_TYPE'] . ':host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
 
         $statement = $pdo->prepare('INSERT INTO formations (name, start_date, end_date, max_participants, price) VALUES (:name, :start_date, :end_date, :max_participants, :price)');
 
