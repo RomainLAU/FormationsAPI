@@ -14,6 +14,23 @@ class Participant
         $this->society = $society;
     }
 
+    public static function findAll()
+    {
+        $pdo = new PDO($_ENV['DB_TYPE'] . ':host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
+
+        $statement = $pdo->prepare('SELECT * FROM participants');
+
+        $statement->execute();
+
+        $participants = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($participants) {
+            return $participants;
+        } else {
+            return null;
+        }
+    }
+
     public static function findById($id)
     {
         $pdo = new PDO($_ENV['DB_TYPE'] . ':host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);

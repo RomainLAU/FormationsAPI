@@ -49,6 +49,26 @@ $app->post('/participants/create', function (Request $request, Response $respons
         ->withStatus(200);
 });
 
+$app->get('/participants', function (Request $request, Response $response, $args) {
+    $controller = new ParticipantController();
+    $participants = $controller->getParticipants();
+
+    if (!$participants) {
+        $payload = json_encode(['status' => 404, 'data' => $participants]);
+        $response->getBody()->write($payload);
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(404);
+    }
+
+    $payload = json_encode($participants);
+    $response->getBody()->write($payload);
+
+    return $response
+        ->withHeader('Content-Type', 'application/json');
+});
+
 $app->get('/participants/{id}', function (Request $request, Response $response, $args) {
     $controller = new ParticipantController();
     $participant = $controller->getParticipant($args['id']);

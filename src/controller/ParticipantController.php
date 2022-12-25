@@ -6,6 +6,17 @@ require_once __DIR__ . '/../model/Participant.php';
 
 class ParticipantController
 {
+
+    public function getParticipants()
+    {
+        $participants = Participant::findAll();
+
+        if (!$participants) {
+            return null;
+        }
+
+        return $participants;
+    }
     public function getParticipant($id)
     {
 
