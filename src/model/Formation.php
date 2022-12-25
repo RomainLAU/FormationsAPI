@@ -54,9 +54,10 @@ class Formation
         $statement = $pdo->prepare('INSERT INTO formations (name, start_date, end_date, max_participants, price) VALUES (:name, :start_date, :end_date, :max_participants, :price)');
 
         $statement->bindValue(':name', $this->name, PDO::PARAM_STR_CHAR);
-        $statement->bindValue(':start_date', date('d-m-Y', $this->start_date), PDO::PARAM_STR);
-        $statement->bindValue(':end_date', date('d-m-Y', $this->start_date), PDO::PARAM_STR);
-        $statement->bindValue(':max_participants', $this->max_participants, PDO::PARAM_STR_CHAR);
+        $statement->bindValue(':start_date', date('d-m-Y', strtotime($this->start_date)), PDO::PARAM_STR);
+        $statement->bindValue(':end_date', date('d-m-Y', strtotime($this->end_date)), PDO::PARAM_STR);
+        $statement->bindValue(':max_participants', $this->max_participants, PDO::PARAM_INT);
+        $statement->bindValue(':price', $this->price, PDO::PARAM_INT);
 
         $statement->execute();
     }
