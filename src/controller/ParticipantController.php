@@ -12,10 +12,10 @@ class ParticipantController
         $participant = Participant::findById($id);
 
         if (!$participant) {
-            $data = null;
+            return null;
         }
 
-        return $data;
+        return $participant;
     }
 
     public function createParticipant($lastname, $firstname, $society)
