@@ -18,33 +18,39 @@ class Formation
         $this->price = $price;
     }
 
-    public static function findById($id)
+    public static function findAll()
     {
-        // $pdo = new PDO($_ENV['DB_TYPE'] . ':host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
         $pdo = new PDO($_ENV['DB_TYPE'] . ':host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
 
-        // Préparer une requête SQL pour récupérer l'enregistrement avec l'ID spécifié
-        $statement = $pdo->prepare('SELECT * FROM formations WHERE id = :id');
+        $statement = $pdo->prepare('SELECT * FROM formations');
 
-        // Lier les valeurs aux marqueurs de paramètres
-        $statement->bindValue(':id', $id, PDO::PARAM_INT);
-
-        // Exécuter la requête
         $statement->execute();
 
-        // Récupérer les données de l'enregistrement sous forme de tableau associatif
+        $formations = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($formations) {
+            return $formations;
+        } else {
+            return null;
+        }
+    }
+
+    public static function findById($id)
+    {
+        $pdo = new PDO($_ENV['DB_TYPE'] . ':host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
+
+        $statement = $pdo->prepare('SELECT * FROM formations WHERE id = :id');
+
+        $statement->bindValue(':id', $id, PDO::PARAM_INT);
+
+        $statement->execute();
+
         $row = $statement->fetch(PDO::FETCH_ASSOC);
 
-        // Vérifier si l'enregistrement a été trouvé
         if ($row) {
-            // Créer un nouvel objet Formation
-            $formation = new Formation($row['name'], $row['start_date'], $row['end_date'], $row['max_participants'], $row['price']);
-
-            // Retourner l'objet Formation
-            return $formation;
+            return $row;
         }
 
-        // Si aucun enregistrement n'a été trouvé, retourner null
         return null;
     }
 

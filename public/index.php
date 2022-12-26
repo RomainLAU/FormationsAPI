@@ -89,6 +89,43 @@ $app->get('/participants/{id}', function (Request $request, Response $response, 
         ->withHeader('Content-Type', 'application/json');
 });
 
+$app->get('/formations[/{id}]', function (Request $request, Response $response, $args) {
+    $controller = new FormationController();
+
+    if ($args['id']) {
+        $formation = $controller->getFormation($args['id']);
+
+        if (!$formation) {
+            $payload = json_encode(['status' => 404, 'data' => $formation]);
+            $response->getBody()->write($payload);
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(404);
+        }
+
+        $payload = json_encode($formation);
+    } else {
+        $formations = $controller->getFormations();
+
+        if (!$formations) {
+            $payload = json_encode(['status' => 404, 'data' => $formations]);
+            $response->getBody()->write($payload);
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(404);
+        }
+
+        $payload = json_encode($formations);
+    }
+
+    $response->getBody()->write($payload);
+
+    return $response
+        ->withHeader('Content-Type', 'application/json');
+});
+
 $app->post('/formations/create', function (Request $request, Response $response, $args) {
 
     if ($request->getHeaderLine('content-type') !== 'application/json') {

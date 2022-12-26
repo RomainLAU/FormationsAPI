@@ -17,6 +17,7 @@ class ParticipantController
 
         return $participants;
     }
+
     public function getParticipant($id)
     {
 
