@@ -22,17 +22,36 @@ class Formation
     {
         $pdo = new PDO($_ENV['DB_TYPE'] . ':host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
 
-        $statement = $pdo->prepare('SELECT * FROM formations');
+        $query = "SELECT f.*, p.id AS participant_id, p.firstname, p.lastname, p.society FROM formations f
+        LEFT JOIN formation_has_participants fp ON fp.formation_id = f.id
+        LEFT JOIN participants p ON p.id = fp.participant_id;";
 
-        $statement->execute();
+        $statement = $pdo->query($query);
 
-        $formations = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-        if ($formations) {
-            return $formations;
-        } else {
-            return null;
+        $formations = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $formationId = $row['id'];
+            if (!isset($formations[$formationId])) {
+                $formations[$formationId] = [
+                    'id' => $row['id'],
+                    'name' => $row['name'],
+                    'start_date' => $row['start_date'],
+                    'end_date' => $row['end_date'],
+                    'max_participants' => $row['max_participants'],
+                    'participants' => []
+                ];
+            }
+            if ($row['firstname']) {
+                $formations[$formationId]['participants'][] = [
+                    'id' => $row['participant_id'],
+                    'firstname' => $row['firstname'],
+                    'lastname' => $row['lastname'],
+                    'society' => $row['society']
+                ];
+            }
         }
+
+        return $formations;
     }
 
     public static function findById($id)

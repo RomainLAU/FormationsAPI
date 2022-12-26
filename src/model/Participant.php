@@ -51,6 +51,23 @@ class Participant
         }
     }
 
+    public static function findByFormation($formationId)
+    {
+        $pdo = new PDO($_ENV['DB_TYPE'] . ':host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
+
+        $statement = $pdo->prepare('SELECT p.id, p.lastname, p.firstname, p.society, formation_id FROM formation_has_participants
+        LEFT JOIN participants p ON p.id = participant_id
+        WHERE formation_id = :formation_id;');
+
+        $statement->bindValue(':formation_id', $formationId, PDO::PARAM_INT);
+
+        $statement->execute();
+
+        $participants = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        return $participants;
+    }
+
     public function create()
     {
 

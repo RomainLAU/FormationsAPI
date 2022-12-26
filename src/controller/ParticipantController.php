@@ -11,10 +11,6 @@ class ParticipantController
     {
         $participants = Participant::findAll();
 
-        if (!$participants) {
-            return null;
-        }
-
         return $participants;
     }
 
@@ -23,10 +19,6 @@ class ParticipantController
 
         $participant = Participant::findById($id);
 
-        if (!$participant) {
-            return null;
-        }
-
         return $participant;
     }
 
@@ -34,5 +26,12 @@ class ParticipantController
     {
         $participant = new Participant($lastname, $firstname, $society);
         $participant->create();
+    }
+
+    public function getParticipantsByFormation($formationId)
+    {
+        $participants = Participant::findByFormation($formationId);
+
+        return $participants;
     }
 }

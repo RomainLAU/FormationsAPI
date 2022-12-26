@@ -4,6 +4,7 @@ use Dotenv\Dotenv;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
+use Slim\Routing\RouteCollectorProxy;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -62,7 +63,7 @@ $app->get('/participants', function (Request $request, Response $response, $args
             ->withStatus(404);
     }
 
-    $payload = json_encode($participants);
+    $payload = json_encode(['status' => 200, 'data' => $participants]);
     $response->getBody()->write($payload);
 
     return $response
@@ -82,30 +83,18 @@ $app->get('/participants/{id}', function (Request $request, Response $response, 
             ->withStatus(404);
     }
 
-    $payload = json_encode($participant);
+    $payload = json_encode(['status' => 200, 'data' => $participant]);
     $response->getBody()->write($payload);
 
     return $response
         ->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/formations[/{id}]', function (Request $request, Response $response, $args) {
-    $controller = new FormationController();
+$app->group('/formations', function (RouteCollectorProxy $group) {
 
-    if ($args['id']) {
-        $formation = $controller->getFormation($args['id']);
+    $group->get('', function (Request $request, Response $response, $args) {
+        $controller = new FormationController();
 
-        if (!$formation) {
-            $payload = json_encode(['status' => 404, 'data' => $formation]);
-            $response->getBody()->write($payload);
-
-            return $response
-                ->withHeader('Content-Type', 'application/json')
-                ->withStatus(404);
-        }
-
-        $payload = json_encode($formation);
-    } else {
         $formations = $controller->getFormations();
 
         if (!$formations) {
@@ -117,13 +106,57 @@ $app->get('/formations[/{id}]', function (Request $request, Response $response, 
                 ->withStatus(404);
         }
 
-        $payload = json_encode($formations);
-    }
+        $payload = json_encode(['status' => 200, 'data' => $formations]);
 
-    $response->getBody()->write($payload);
+        $response->getBody()->write($payload);
 
-    return $response
-        ->withHeader('Content-Type', 'application/json');
+        return $response
+            ->withHeader('Content-Type', 'application/json');
+    });
+
+    $group->get('/{id}', function (Request $request, Response $response, $args) {
+        $controller = new FormationController();
+
+        $formation = $controller->getFormation($args['id']);
+
+        if (!$formation) {
+            $payload = json_encode(['status' => 404, 'data' => $formation]);
+            $response->getBody()->write($payload);
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(404);
+        }
+
+        $payload = json_encode(['status' => 200, 'data' => $formation]);
+
+        $response->getBody()->write($payload);
+
+        return $response
+            ->withHeader('Content-Type', 'application/json');
+    });
+
+    $group->get('/{id}/participants', function (Request $request, Response $response, $args) {
+        $controller = new ParticipantController();
+
+        $participants = $controller->getParticipantsByFormation($args['id']);
+
+        if (!$participants) {
+            $payload = json_encode(['status' => 404, 'data' => $participants]);
+            $response->getBody()->write($payload);
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(404);
+        }
+
+        $payload = json_encode(['status' => 200, 'data' => $participants]);
+
+        $response->getBody()->write($payload);
+
+        return $response
+            ->withHeader('Content-Type', 'application/json');
+    });
 });
 
 $app->post('/formations/create', function (Request $request, Response $response, $args) {
