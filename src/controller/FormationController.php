@@ -41,4 +41,19 @@ class FormationController
             return $formation;
         }
     }
+
+    public function removeParticipantToFormation($formationId, $participantId)
+    {
+        $formationParticipants = Formation::findById($formationId)[1]['participants'];
+
+        foreach ($formationParticipants as $key => $participant) {
+            if ($participantId == $participant['id']) {
+                Formation::removeParticipant($formationId, $participant['id']);
+            }
+        }
+
+        if ($formationId && $participantId) {
+            return 404;
+        }
+    }
 }

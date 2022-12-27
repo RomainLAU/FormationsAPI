@@ -125,4 +125,8 @@ class Formation
 
         return $result;
     }
+
+    public static function removeParticipant($formationId, $participantId)
+    {
+    }
 }

@@ -175,6 +175,35 @@ $app->group('/formations', function (RouteCollectorProxy $group) {
         return $response
             ->withHeader('Content-Type', 'application/json');
     });
+
+    $group->delete('/{formationId}/participants/{participantId}', function (Request $request, Response $response, $args) {
+        $controller = new FormationController();
+
+        $formation = $controller->removeParticipantToFormation($args['formationId'], $args['participantId']);
+
+        if (!$formation) {
+            $payload = json_encode(['status' => 400, 'data' => ['An error occured.']]);
+            $response->getBody()->write($payload);
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(400);
+        } else if ($formation === 409) {
+            $payload = json_encode(['status' => 400, 'data' => ['This person already participates to this formation.']]);
+            $response->getBody()->write($payload);
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(400);
+        }
+
+        $payload = json_encode(['status' => 200, 'data' => ['Request successful !']]);
+
+        $response->getBody()->write($payload);
+
+        return $response
+            ->withHeader('Content-Type', 'application/json');
+    });
 });
 
 $app->post('/formations/create', function (Request $request, Response $response, $args) {
