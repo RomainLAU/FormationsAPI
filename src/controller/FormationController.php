@@ -1,7 +1,5 @@
 <?php
 
-// Inclure la classe Formation
-
 require_once __DIR__ . '/../model/Formation.php';
 
 class FormationController
@@ -9,10 +7,6 @@ class FormationController
     public function getFormations()
     {
         $formations = Formation::findAll();
-
-        if (!$formations) {
-            return null;
-        }
 
         return $formations;
     }
@@ -22,10 +16,6 @@ class FormationController
 
         $formation = Formation::findById($id);
 
-        if (!$formation) {
-            return null;
-        }
-
         return $formation;
     }
 
@@ -33,5 +23,22 @@ class FormationController
     {
         $formation = new Formation($name, $start_date, $end_date, $max_participants, $price);
         $formation->create();
+    }
+
+    public function addParticipantToFormation($formationId, $participantId)
+    {
+        $formationParticipants = Formation::findById($formationId)[1]['participants'];
+
+        foreach ($formationParticipants as $key => $participant) {
+            if ($participantId == $participant['id']) {
+                return 409;
+            }
+        }
+
+        if ($formationId && $participantId) {
+            $formation = Formation::addParticipant($formationId, $participantId);
+
+            return $formation;
+        }
     }
 }

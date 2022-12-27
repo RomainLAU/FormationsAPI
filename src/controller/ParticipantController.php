@@ -1,7 +1,5 @@
 <?php
 
-// Inclure la classe Participant
-
 require_once __DIR__ . '/../model/Participant.php';
 
 class ParticipantController
