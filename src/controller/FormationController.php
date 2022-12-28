@@ -29,7 +29,7 @@ class FormationController
 
     public function addParticipantToFormation($formationId, $participantId)
     {
-        $formationParticipants = Formation::findById($formationId)[1]['participants'];
+        $formationParticipants = Formation::findById($formationId)['participants'];
 
         foreach ($formationParticipants as $key => $participant) {
             if ($participantId == $participant['id']) {
@@ -44,13 +44,14 @@ class FormationController
         }
     }
 
-    public function removeParticipantToFormation($formationId, $participantId)
+    public function removeParticipantOfFormation($formationId, $participantId)
     {
-        $formationParticipants = Formation::findById($formationId)[1]['participants'];
+        $formationParticipants = Formation::findById($formationId)['participants'];
 
         foreach ($formationParticipants as $key => $participant) {
             if ($participantId == $participant['id']) {
                 $formation = Formation::removeParticipant($formationId, $participant['id']);
+
 
                 return $formation;
             }

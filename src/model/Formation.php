@@ -39,6 +39,7 @@ class Formation
                     'start_date' => $row['start_date'],
                     'end_date' => $row['end_date'],
                     'max_participants' => $row['max_participants'],
+                    'price' => $row['price'],
                     'participants' => []
                 ];
             }
@@ -68,22 +69,22 @@ class Formation
 
         $statement->execute();
 
-        $formations = [];
+        $formation = null;
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $formationId = $row['id'];
-            if (!isset($formations[$formationId])) {
-                $formations[$formationId] = [
+            if (!isset($formation)) {
+                $formation = [
                     'id' => $row['id'],
                     'name' => $row['name'],
                     'start_date' => $row['start_date'],
                     'end_date' => $row['end_date'],
                     'max_participants' => $row['max_participants'],
+                    'price' => $row['price'],
                     'participants' => []
                 ];
             }
             if ($row['firstname']) {
-                $formations[$formationId]['participants'][] = [
+                $formation['participants'][] = [
                     'id' => $row['participant_id'],
                     'firstname' => $row['firstname'],
                     'lastname' => $row['lastname'],
@@ -92,7 +93,7 @@ class Formation
             }
         }
 
-        return $formations;
+        return $formation;
     }
 
     public function create()
@@ -136,6 +137,10 @@ class Formation
         $statement->bindValue(':participantId', $participantId, PDO::PARAM_INT);
 
         $result = $statement->execute();
+
+        // var_dump($result);
+
+        // die;
 
         return $result;
     }

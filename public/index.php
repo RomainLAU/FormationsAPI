@@ -109,7 +109,7 @@ $app->group('/formations', function (RouteCollectorProxy $group) {
         $formation = $controller->getFormation($args['id']);
 
         if (!$formation) {
-            $payload = json_encode(['status' => 404, 'data' => $formation]);
+            $payload = json_encode(['status' => 404, 'data' => ['Formation not found.']]);
             $response->getBody()->write($payload);
 
             return $response
@@ -158,7 +158,7 @@ $app->group('/formations', function (RouteCollectorProxy $group) {
         $participants = $controller->getParticipantsByFormation($args['id']);
 
         if (!$participants) {
-            $payload = json_encode(['status' => 404, 'data' => $participants]);
+            $payload = json_encode(['status' => 404, 'data' => ['The formation wasn\'t found.']]);
             $response->getBody()->write($payload);
 
             return $response
@@ -206,7 +206,7 @@ $app->group('/formations', function (RouteCollectorProxy $group) {
     $group->delete('/{formationId}/participants/{participantId}', function (Request $request, Response $response, $args) {
         $controller = new FormationController();
 
-        $formation = $controller->removeParticipantToFormation($args['formationId'], $args['participantId']);
+        $formation = $controller->removeParticipantOfFormation($args['formationId'], $args['participantId']);
 
         if (!$formation) {
             $payload = json_encode(['status' => 400, 'data' => ['An error occured.']]);
