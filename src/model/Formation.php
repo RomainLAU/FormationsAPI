@@ -128,5 +128,15 @@ class Formation
 
     public static function removeParticipant($formationId, $participantId)
     {
+        $pdo = new PDO($_ENV['DB_TYPE'] . ':host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
+
+        $statement = $pdo->prepare('DELETE FROM formation_has_participants WHERE formation_id = :formationId AND participant_id = :participantId');
+
+        $statement->bindValue(':formationId', $formationId, PDO::PARAM_INT);
+        $statement->bindValue(':participantId', $participantId, PDO::PARAM_INT);
+
+        $result = $statement->execute();
+
+        return $result;
     }
 }
