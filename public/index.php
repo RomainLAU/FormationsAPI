@@ -187,7 +187,7 @@ $app->group('/formations', function (RouteCollectorProxy $group) {
                 ->withHeader('Content-Type', 'application/json')
                 ->withStatus(400);
         } else if ($formation === 409) {
-            $payload = json_encode(['status' => 400, 'data' => ['This person already participates to this formation.']]);
+            $payload = json_encode(['status' => 400, 'data' => ['This person already participates to this formation or there are too many participants to this formation.']]);
             $response->getBody()->write($payload);
 
             return $response

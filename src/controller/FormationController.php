@@ -29,10 +29,11 @@ class FormationController
 
     public function addParticipantToFormation($formationId, $participantId)
     {
-        $formationParticipants = Formation::findById($formationId)['participants'];
+        $formation = Formation::findById($formationId);
+        $participantToAdd = Participant::findById($participantId);
 
-        foreach ($formationParticipants as $key => $participant) {
-            if ($participantId == $participant['id']) {
+        foreach ($formation['participants'] as $key => $participant) {
+            if (!$participantToAdd || $participantId == $participant['id'] || count($formation['participants']) >= $formation['max_participants']) {
                 return 409;
             }
         }
@@ -46,9 +47,9 @@ class FormationController
 
     public function removeParticipantOfFormation($formationId, $participantId)
     {
-        $formationParticipants = Formation::findById($formationId)['participants'];
+        $formation = Formation::findById($formationId);
 
-        foreach ($formationParticipants as $key => $participant) {
+        foreach ($formation['participants'] as $key => $participant) {
             if ($participantId == $participant['id']) {
                 $formation = Formation::removeParticipant($formationId, $participant['id']);
 

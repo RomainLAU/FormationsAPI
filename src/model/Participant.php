@@ -44,11 +44,7 @@ class Participant
         $row = $statement->fetch(PDO::FETCH_ASSOC);
 
 
-        if ($row) {
-            return $row;
-        } else {
-            return null;
-        }
+        return $row;
     }
 
     public static function findByFormation($formationId)
