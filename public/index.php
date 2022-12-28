@@ -125,6 +125,33 @@ $app->group('/formations', function (RouteCollectorProxy $group) {
             ->withHeader('Content-Type', 'application/json');
     });
 
+    $group->post('/create', function (Request $request, Response $response, $args) {
+
+        if ($request->getHeaderLine('content-type') !== 'application/json') {
+            return $response->withStatus(415);
+        }
+
+        $controller = new FormationController();
+        $data = $request->getParsedBody();
+
+        $formation = $controller->createFormation($data['name'], $data['start_date'], $data['end_date'], $data['max_participants'], $data['price']);
+
+        if ($formation) {
+            $payload = json_encode(['status' => 200, 'data' => ['Request successful !']]);
+            $response->getBody()->write($payload);
+
+            return $response
+                ->withStatus(200);
+        } else {
+
+            $payload = json_encode(['status' => 400, 'data' => ['An error occured.']]);
+            $response->getBody()->write($payload);
+
+            return $response
+                ->withStatus(400);
+        }
+    });
+
     $group->get('/{id}/participants', function (Request $request, Response $response, $args) {
         $controller = new ParticipantController();
 
@@ -204,21 +231,6 @@ $app->group('/formations', function (RouteCollectorProxy $group) {
         return $response
             ->withHeader('Content-Type', 'application/json');
     });
-});
-
-$app->post('/formations/create', function (Request $request, Response $response, $args) {
-
-    if ($request->getHeaderLine('content-type') !== 'application/json') {
-        return $response->withStatus(415);
-    }
-
-    $controller = new FormationController();
-    $data = $request->getParsedBody();
-
-    $controller->createFormation($data['name'], $data['start_date'], $data['end_date'], $data['max_participants'], $data['price']);
-
-    return $response
-        ->withStatus(200);
 });
 
 

@@ -23,6 +23,8 @@ class FormationController
     {
         $formation = new Formation($name, $start_date, $end_date, $max_participants, $price);
         $formation->create();
+
+        return $formation;
     }
 
     public function addParticipantToFormation($formationId, $participantId)
