@@ -77,4 +77,17 @@ class Participant
 
         $statement->execute();
     }
+
+    public static function removeParticipant($participantId)
+    {
+        $pdo = new PDO($_ENV['DB_TYPE'] . ':host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
+
+        $statement = $pdo->prepare('DELETE FROM participants WHERE id = :participantId');
+
+        $statement->bindValue(':participantId', $participantId, PDO::PARAM_INT);
+
+        $result = $statement->execute();
+
+        return $result;
+    }
 }

@@ -55,6 +55,16 @@
 | `formation_id`   | `int` | **Required**. Id of the formation         |
 | `participant_id` | `int` | **Required**. Id of participant to remove |
 
+#### Remove a formation
+
+```sh
+  DELETE /formations/{formation_id}
+```
+
+| Parameter | Type  | Description                       |
+| :-------- | :---- | :-------------------------------- |
+| `id`      | `int` | **Required**. Id of the formation |
+
 ---
 
 ### Participants
@@ -86,3 +96,15 @@
 | `lastname`  | `string` | **Required**. Lastname of the participant to create  |
 | `firstname` | `string` | **Required**. Firstname of the participant to create |
 | `society`   | `string` | Society of the participant to create                 |
+
+#### Remove a participant
+
+```sh
+  DELETE /participants/{participant_id}
+```
+
+| Parameter | Type  | Description                         |
+| :-------- | :---- | :---------------------------------- |
+| `id`      | `int` | **Required**. Id of the participant |
+
+---

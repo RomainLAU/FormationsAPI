@@ -138,9 +138,18 @@ class Formation
 
         $result = $statement->execute();
 
-        // var_dump($result);
+        return $result;
+    }
 
-        // die;
+    public static function removeFormation($formationId)
+    {
+        $pdo = new PDO($_ENV['DB_TYPE'] . ':host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
+
+        $statement = $pdo->prepare('DELETE FROM formations WHERE id = :formationId');
+
+        $statement->bindValue(':formationId', $formationId, PDO::PARAM_INT);
+
+        $result = $statement->execute();
 
         return $result;
     }

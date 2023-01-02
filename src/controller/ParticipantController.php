@@ -32,4 +32,19 @@ class ParticipantController
 
         return $participants;
     }
+
+    public function deleteParticipant($participantId)
+    {
+        $participant = Participant::findById($participantId);
+
+
+        if ($participant) {
+            $participant = Participant::removeParticipant($participantId);
+
+
+            return $participant;
+        }
+
+        return 400;
+    }
 }

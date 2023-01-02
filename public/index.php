@@ -18,12 +18,6 @@ $app = AppFactory::create();
 
 $app->addBodyParsingMiddleware();
 
-$app->get('/', function (Request $request, Response $response, $args) {
-    $data = 'I like potatoes';
-    $response->getBody()->write("Hello world!" . $data);
-    return $response;
-});
-
 $app->group('/participants', function (RouteCollectorProxy $group) {
 
     $group->get('', function (Request $request, Response $response, $args) {
@@ -75,6 +69,35 @@ $app->group('/participants', function (RouteCollectorProxy $group) {
         }
 
         $payload = json_encode(['status' => 200, 'data' => $participant]);
+        $response->getBody()->write($payload);
+
+        return $response
+            ->withHeader('Content-Type', 'application/json');
+    });
+
+    $group->delete('/{id}', function (Request $request, Response $response, $args) {
+        $controller = new ParticipantController();
+
+        $formation = $controller->deleteParticipant($args['id']);
+
+        if (!$formation) {
+            $payload = json_encode(['status' => 400, 'data' => ['An error occured.']]);
+            $response->getBody()->write($payload);
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(400);
+        } else if ($formation === 400) {
+            $payload = json_encode(['status' => 400, 'data' => ['This participant doesn\'t exist, you can\'t destroy things that don\'t exist...']]);
+            $response->getBody()->write($payload);
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(400);
+        }
+
+        $payload = json_encode(['status' => 200, 'data' => ['Request successful !']]);
+
         $response->getBody()->write($payload);
 
         return $response
@@ -220,6 +243,35 @@ $app->group('/formations', function (RouteCollectorProxy $group) {
                 ->withStatus(400);
         } else if ($formation === 400) {
             $payload = json_encode(['status' => 400, 'data' => ['This person doesn\'t participates to this formation, the formation doesn\'t exist or the participant doesn\'t exist.']]);
+            $response->getBody()->write($payload);
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(400);
+        }
+
+        $payload = json_encode(['status' => 200, 'data' => ['Request successful !']]);
+
+        $response->getBody()->write($payload);
+
+        return $response
+            ->withHeader('Content-Type', 'application/json');
+    });
+
+    $group->delete('/{id}', function (Request $request, Response $response, $args) {
+        $controller = new FormationController();
+
+        $formation = $controller->deleteFormation($args['id']);
+
+        if (!$formation) {
+            $payload = json_encode(['status' => 400, 'data' => ['An error occured.']]);
+            $response->getBody()->write($payload);
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(400);
+        } else if ($formation === 400) {
+            $payload = json_encode(['status' => 400, 'data' => ['This formation doesn\'t exist, you can\'t destroy things that don\'t exist...']]);
             $response->getBody()->write($payload);
 
             return $response

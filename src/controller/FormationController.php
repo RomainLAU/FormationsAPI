@@ -60,4 +60,19 @@ class FormationController
 
         return 400;
     }
+
+    public function deleteFormation($formationId)
+    {
+        $formation = Formation::findById($formationId);
+
+
+        if ($formation) {
+            $formation = Formation::removeFormation($formationId);
+
+
+            return $formation;
+        }
+
+        return 400;
+    }
 }
