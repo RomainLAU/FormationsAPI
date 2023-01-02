@@ -105,6 +105,6 @@
 | :-------- | :---- | :---------------------------------- |
 | `id`      | `int` | **Required**. Id of the participant |
 
-==========================================================================================
+===========================================================================
 
 _For security reasons, I decided you wouldn't be able to modify an entity, so if there is an issue with an entity, you will have to delete the entity and recreate it with the good data._
