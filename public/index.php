@@ -24,59 +24,62 @@ $app->get('/', function (Request $request, Response $response, $args) {
     return $response;
 });
 
-$app->post('/participants/create', function (Request $request, Response $response, $args) {
+$app->group('/participants', function (RouteCollectorProxy $group) {
 
-    if ($request->getHeaderLine('content-type') !== 'application/json') {
-        return $response->withStatus(415);
-    }
+    $group->get('', function (Request $request, Response $response, $args) {
+        $controller = new ParticipantController();
+        $participants = $controller->getParticipants();
 
-    $controller = new ParticipantController();
-    $data = $request->getParsedBody();
+        if (!$participants) {
+            $payload = json_encode(['status' => 404, 'data' => $participants]);
+            $response->getBody()->write($payload);
 
-    $controller->createParticipant($data['lastname'], $data['firstname'], $data['society']);
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(404);
+        }
 
-    return $response
-        ->withStatus(200);
-});
-
-$app->get('/participants', function (Request $request, Response $response, $args) {
-    $controller = new ParticipantController();
-    $participants = $controller->getParticipants();
-
-    if (!$participants) {
-        $payload = json_encode(['status' => 404, 'data' => $participants]);
+        $payload = json_encode(['status' => 200, 'data' => $participants]);
         $response->getBody()->write($payload);
 
         return $response
-            ->withHeader('Content-Type', 'application/json')
-            ->withStatus(404);
-    }
+            ->withHeader('Content-Type', 'application/json');
+    });
 
-    $payload = json_encode(['status' => 200, 'data' => $participants]);
-    $response->getBody()->write($payload);
+    $group->post('', function (Request $request, Response $response, $args) {
 
-    return $response
-        ->withHeader('Content-Type', 'application/json');
-});
+        if ($request->getHeaderLine('content-type') !== 'application/json') {
+            return $response->withStatus(415);
+        }
 
-$app->get('/participants/{id}', function (Request $request, Response $response, $args) {
-    $controller = new ParticipantController();
-    $participant = $controller->getParticipant($args['id']);
+        $controller = new ParticipantController();
+        $data = $request->getParsedBody();
 
-    if (!$participant) {
-        $payload = json_encode(['status' => 404, 'data' => $participant]);
+        $controller->createParticipant($data['lastname'], $data['firstname'], $data['society']);
+
+        return $response
+            ->withStatus(200);
+    });
+
+    $group->get('/{id}', function (Request $request, Response $response, $args) {
+        $controller = new ParticipantController();
+        $participant = $controller->getParticipant($args['id']);
+
+        if (!$participant) {
+            $payload = json_encode(['status' => 404, 'data' => $participant]);
+            $response->getBody()->write($payload);
+
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus(404);
+        }
+
+        $payload = json_encode(['status' => 200, 'data' => $participant]);
         $response->getBody()->write($payload);
 
         return $response
-            ->withHeader('Content-Type', 'application/json')
-            ->withStatus(404);
-    }
-
-    $payload = json_encode(['status' => 200, 'data' => $participant]);
-    $response->getBody()->write($payload);
-
-    return $response
-        ->withHeader('Content-Type', 'application/json');
+            ->withHeader('Content-Type', 'application/json');
+    });
 });
 
 $app->group('/formations', function (RouteCollectorProxy $group) {
@@ -125,7 +128,7 @@ $app->group('/formations', function (RouteCollectorProxy $group) {
             ->withHeader('Content-Type', 'application/json');
     });
 
-    $group->post('/create', function (Request $request, Response $response, $args) {
+    $group->post('', function (Request $request, Response $response, $args) {
 
         if ($request->getHeaderLine('content-type') !== 'application/json') {
             return $response->withStatus(415);
