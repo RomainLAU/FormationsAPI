@@ -6,13 +6,13 @@
 
 #### Get all formations
 
-```http
+```sh
   GET /formations
 ```
 
 #### Get one formation
 
-```http
+```sh
   GET /formations/{id}
 ```
 
@@ -22,7 +22,7 @@
 
 #### Get all participants from a formation
 
-```http
+```sh
   GET /formations/{id}/participants
 ```
 
@@ -32,7 +32,7 @@
 
 #### Create a formation
 
-```http
+```sh
   POST /formations
 ```
 
@@ -46,7 +46,7 @@
 
 #### Remove a participant from a formation
 
-```http
+```sh
   DELETE /formations/{formation_id}/participants/{participant_id}
 ```
 
@@ -61,13 +61,13 @@
 
 #### Get all participants
 
-```http
+```sh
   GET /participants
 ```
 
 #### Get one participant
 
-```http
+```sh
   GET /participants/{id}
 ```
 
@@ -77,7 +77,7 @@
 
 #### Create a participant
 
-```http
+```sh
   POST /participants
 ```
 
